@@ -22,7 +22,14 @@ def scrape_data():
         print("Failed to retrieve data")
         return pd.DataFrame()
 
-# Run the scrape and display results
+def clean_data(df):
+    # Example: Remove quotation marks around the text
+    df['text'] = df['text'].str.replace('“', '').replace('”', '')
+    # Strip extra whitespace from the author names
+    df['author'] = df['author'].str.strip()
+    return df
+
 if __name__ == "__main__":
     df = scrape_data()
-    print(df.head())  # Display the first few rows of the DataFrame
+    df = clean_data(df)
+    print(df.head())  # Display the first few rows of the cleaned DataFrame
