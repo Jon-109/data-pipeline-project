@@ -1,6 +1,9 @@
+#!/usr/bin/env python3
+
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+import sqlite3
 
 def scrape_data():
     # Define the URL to scrape
@@ -29,7 +32,17 @@ def clean_data(df):
     df['author'] = df['author'].str.strip()
     return df
 
+def save_to_database(df, db_name="quotes.db"):
+    # Connect to the SQLite database (or create it if it doesn't exist)
+    conn = sqlite3.connect(db_name)
+    # Save the DataFrame to a SQL table named "quotes"
+    df.to_sql('quotes', conn, if_exists='replace', index=False)
+    # Close the connection
+    conn.close()
+    print(f"Data saved to {db_name}")
+
 if __name__ == "__main__":
     df = scrape_data()
     df = clean_data(df)
-    print(df.head())  # Display the first few rows of the cleaned DataFrame
+    save_to_database(df)  # Save the cleaned data to the database
+    print(df.head())  # Display the first few rows of the DataFrame
